@@ -1,3 +1,57 @@
+<!-- prettier-ignore -->
+## 🚀 WhyStack Frontend — Vite + React
+
+  __        __   _ _   _             _
+  \ \      / /__| (_) |_ ___  _ __  / \
+   \ \ /\ / / _ \ | | __/ _ \| '_ \ /  /
+    \ V  V /  __/ | | || (_) | | | /\_/ 
+     \_/\_/ \___|_|_|\__\___/|_| |_\/   
+
+What this part does
+ - Provides an interactive editor to paste structured JSON (logs, metrics, traces).
+ - Calls the backend `/explain` endpoint and visualizes the returned explanation.
+ - Shows Summary, Ranked Causes, Evidence snippets, and the Audit trail of fired rules.
+
+Key files
+ - `src/main.tsx` — SPA entry and routing (`/`, `/docs`, `/rules`, `/about`).
+ - `src/components/EditorPanel.tsx` — JSON editor and explain button.
+ - `src/components/ExplanationPanel.tsx` — UI rendering of results, evidence and audit.
+ - `src/utils/api.ts` — API helper using `VITE_BACKEND_URL` or `/explain` fallback.
+ - `vercel.json` — optional Vercel rewrites for SPA and API proxy.
+
+Quick start (dev)
+```powershell
+cd frontend
+npm install
+npm run dev
+# open http://localhost:5173
+```
+
+Build (static)
+```powershell
+cd frontend
+npm run build
+# `dist/` will contain the static site to deploy
+```
+
+Environment
+ - `VITE_BACKEND_URL` (optional): full URL to the deployed backend (e.g. https://whystack.onrender.com). If omitted, the app uses `/explain`.
+
+Deployment notes
+ - Deploy the `dist/` folder to Vercel, Netlify, or any static host.
+ - If using Vercel, `frontend/vercel.json` contains recommended `rewrites` to proxy `/explain` to the live backend and to fallback SPA routes to `index.html`.
+
+Developer tips
+ - The editor falls back to a simple textarea if Monaco fails to load.
+ - To test end-to-end locally, run the backend (see `../backend/README.md`) and set `VITE_BACKEND_URL` to `http://localhost:3000` before starting dev server.
+
+Contributing UI changes
+ - Add components under `src/components` and update routes in `src/main.tsx`.
+ - Keep UI behavior deterministic: avoid client-side heuristics that hide audit details.
+
+---
+
+For more backend internals, see `../backend/README.md`.
 # React + TypeScript + Vite
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
