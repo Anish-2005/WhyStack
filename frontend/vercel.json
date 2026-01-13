@@ -1,0 +1,19 @@
+{
+  "version": 2,
+  "builds": [
+    {
+      "src": "package.json",
+      "use": "@vercel/static-build",
+      "config": { "distDir": "dist" }
+    }
+  ],
+  "routes": [
+    { "handle": "filesystem" },
+    { "src": "/explain", "dest": "https://whystack.onrender.com/explain" },
+    { "src": "^/(.*)$", "dest": "/index.html" }
+  ],
+  "cleanUrls": true,
+  "env": {
+    "VITE_BACKEND_URL": "https://whystack.onrender.com"
+  }
+}
