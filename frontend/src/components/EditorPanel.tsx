@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import { useRef } from 'react'
 import Editor from '@monaco-editor/react'
 
 type Props = {

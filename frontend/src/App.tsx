@@ -12,10 +12,8 @@ const example = `[
 export default function App() {
   const [value, setValue] = useState(example)
   const [result, setResult] = useState<any | null>(null)
-  const [loading, setLoading] = useState(false)
 
   async function onExplain() {
-    setLoading(true)
     try {
       const parsed = JSON.parse(value)
       const data = await explainApi(parsed)
@@ -23,7 +21,6 @@ export default function App() {
     } catch (err: any) {
       setResult({ summary: 'Error', explanation: err.message || String(err), trace: {} })
     } finally {
-      setLoading(false)
     }
   }
 

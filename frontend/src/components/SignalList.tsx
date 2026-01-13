@@ -1,5 +1,3 @@
-import React from 'react'
-
 type Signal = { signal: string; severity?: string; startTime?: string; service?: string }
 
 export default function SignalList({ signals }: { signals: Signal[] }) {
