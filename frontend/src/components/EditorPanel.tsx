@@ -31,14 +31,14 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
     <div className="panel">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-medium">Input</h2>
-        <div className="flex" style={{ gap: 8, flexWrap: 'wrap', alignItems: 'center' }}>
-          <button className="btn btn-outline text-sm" onClick={prettify}>Prettify</button>
-          <button className="btn btn-primary text-sm" onClick={onExplain}>Explain</button>
+        <div className="editor-controls" style={{ gap: 8 }}>
+          <button className="btn btn-outline text-sm" onClick={prettify} aria-label="Prettify JSON">Prettify</button>
+          <button className="btn btn-primary text-sm" onClick={onExplain} aria-label="Explain logs">Explain</button>
         </div>
       </div>
 
       {monacoReady ? (
-        <div className="editor-container" style={{ height: '18rem' }}>
+        <div className="editor-container">
           <Editor
             height="100%"
             defaultLanguage="json"
@@ -50,15 +50,15 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
           />
         </div>
       ) : (
-        <textarea className="w-full h-72 p-3 bg-gray-800 text-sm rounded" value={value} onChange={(e) => onChange(e.target.value)} />
+        <textarea className="editor-textarea" value={value} onChange={(e) => onChange(e.target.value)} />
       )}
 
-      <div className="mt-3" style={{ display: 'flex', gap: 8, justifyContent: 'space-between', flexWrap: 'wrap' }}>
-        <div>
-          <button className="btn btn-outline text-sm" onClick={onLoadExample}>Load example</button>
+      <div className="mt-3 editor-controls" style={{ justifyContent: 'space-between', width: '100%' }}>
+        <div style={{flex: '1 1 auto'}}>
+          <button className="btn btn-outline text-sm" onClick={onLoadExample} aria-label="Load example">Load example</button>
         </div>
 
-        <div>
+        <div style={{flex: '0 0 auto'}}>
           <a className="text-sm text-gray-400" href="#" onClick={(e) => { e.preventDefault(); alert('Docs coming soon') }}>Quick help</a>
         </div>
       </div>

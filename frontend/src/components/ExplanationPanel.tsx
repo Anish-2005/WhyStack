@@ -49,7 +49,7 @@
 
     return (
       <div className="panel">
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-3" style={{gap:8}}>
           <h2 className="text-lg font-medium">Explanation</h2>
           <div className="text-sm text-gray-400">Confidence: <strong>{result.confidence || 'Unknown'}</strong></div>
         </div>
@@ -108,10 +108,10 @@
         </div>
 
         <div className="mt-4">
-          <div className="flex items-center justify-between mb-2">
+          <div className="flex items-center justify-between mb-2" style={{gap:8}}>
             <h4 className="text-sm font-medium">Trace</h4>
-            <div className="flex items-center gap-2">
-              <button className="btn btn-outline" onClick={() => { setShowTrace(s => !s) }}>{showTrace ? 'Hide' : 'Show'} JSON</button>
+            <div style={{display:'flex', gap:8}}>
+              <button className="btn btn-outline" onClick={() => { setShowTrace(s => !s) }} aria-expanded={showTrace}>{showTrace ? 'Hide' : 'Show'} JSON</button>
               <button className="btn" onClick={copyTrace}>Copy</button>
             </div>
           </div>

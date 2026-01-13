@@ -79,6 +79,19 @@ html { background-color: #061827; background: linear-gradient(180deg, #071025 0%
 .h1 { font-size: 1.5rem; font-weight: 600 }
 .muted { color: rgba(230,238,248,0.65); font-size: 0.95rem }
 
+/* Header / navigation mobile menu */
+.site-header { position: relative; z-index: 30 }
+.nav-links { display: flex; gap: 12px }
+.hamburger { display: none; width:40px; height:40px; align-items:center; justify-content:center; border-radius:8px }
+.mobile-nav { display: none }
+
+@media (max-width: 640px) {
+	.nav-links { display: none }
+	.hamburger { display: flex }
+	.mobile-nav { display: none }
+	.mobile-nav.open { display: block; position: absolute; left: 0; right: 0; top: 64px; background: linear-gradient(180deg, rgba(6,24,39,0.95), rgba(6,24,39,0.98)); padding: 12px; border-radius: 8px; box-shadow: 0 8px 24px rgba(2,6,23,0.6) }
+	.mobile-nav a { display: block; padding: 10px 12px; border-radius:6px; color: #e6eef8; text-decoration:none }
+}
 /* Responsive breakpoints */
 @media (min-width: 768px) {
 	/* use a 60/40 split so panels use horizontal space more effectively on laptops */
@@ -93,4 +106,21 @@ html { background-color: #061827; background: linear-gradient(180deg, #071025 0%
 	.h1 { font-size: 1.2rem }
 	.btn, .btn-primary, .btn-outline { padding: 0.6rem 0.9rem; font-size: 0.95rem }
 	.grid { gap: 1rem }
+
+	/* Buttons full-width on small screens */
+	.btn, .btn-primary, .btn-outline { width: 100%; display: inline-flex; justify-content:center }
+
+	/* Panels stack and become touch-friendly */
+	.panel { padding: 0.85rem }
+	.header .muted { display: none }
+}
+
+/* Editor controls responsive layout */
+.editor-controls { display:flex; gap:0.5rem; align-items:center; }
+.editor-textarea { width:100%; min-height:220px; padding:0.75rem; background:rgba(10,14,20,0.6); border-radius:8px; color:inherit }
+
+@media (max-width: 640px) {
+	.editor-controls { flex-direction: column; align-items:stretch }
+	.editor-container { height: 260px }
+	.editor-textarea { min-height:180px }
 }
