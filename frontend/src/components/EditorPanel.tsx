@@ -15,7 +15,7 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
     <div className="panel">
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-medium">Input</h2>
-        <div className="flex gap-2">
+        <div className="flex" style={{gap:8, flexWrap:'wrap', alignItems:'center'}}>
           <button className="btn btn-outline text-sm" onClick={() => {
             try {
               const json = JSON.stringify(JSON.parse(value), null, 2)
@@ -38,9 +38,14 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
         />
       </div>
 
-      <div className="mt-3 text-right">
-        <button className="btn btn-outline text-sm mr-2" onClick={onLoadExample}>Load example</button>
-        <a className="text-sm muted" href="#" onClick={(e)=>{e.preventDefault(); alert('Docs coming soon')}}>Quick help</a>
+      <div className="mt-3" style={{display:'flex', gap:8, justifyContent:'space-between', flexWrap:'wrap'}}>
+        <div>
+          <button className="btn btn-outline text-sm" onClick={onLoadExample}>Load example</button>
+        </div>
+
+        <div>
+          <a className="text-sm muted" href="#" onClick={(e)=>{e.preventDefault(); alert('Docs coming soon')}}>Quick help</a>
+        </div>
       </div>
     </div>
   )
