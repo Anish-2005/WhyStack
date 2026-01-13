@@ -12,6 +12,14 @@ app.use(cors());
 app.use(express.json({ limit: '5mb' }));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
+// Serve the SPA build at /frontend
+app.get('/frontend', (req, res) => {
+  res.redirect('/frontend/');
+});
+app.get('/frontend/*', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'public', 'frontend', 'index.html'));
+});
+
 app.post('/explain', (req, res) => {
   try {
     const { logs } = req.body;
@@ -33,8 +41,14 @@ app.post('/explain', (req, res) => {
       }
     });
   } catch (err) {
-    console.error(err);
-    res.status(500).json({ error: 'internal error' });
+    console.error('Error in /explain:', err);
+    const isProd = process.env.NODE_ENV === 'production';
+    const payload = { error: 'internal error' };
+    if (!isProd) {
+      payload.message = err.message;
+      payload.stack = err.stack;
+    }
+    res.status(500).json(payload);
   }
 });
 
