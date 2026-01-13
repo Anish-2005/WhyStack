@@ -10,20 +10,22 @@ const explainer = require('./engine/explainer');
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
-// If a built frontend exists, serve it at root so asset paths like /assets/* work
-const frontendDist = path.join(__dirname, '..', 'public', 'frontend');
-app.use(express.static(frontendDist));
+// Serve the built frontend (dist) at the site root so asset paths like /assets/* resolve
+const frontendDist = path.join(__dirname, '..', 'public', 'frontend', 'dist');
+if (require('fs').existsSync(frontendDist)) {
+  app.use(express.static(frontendDist));
 
-// Fallback to serving other public files
-app.use(express.static(path.join(__dirname, '..', 'public')));
-
-// Serve the SPA build at /frontend
-app.get('/frontend', (req, res) => {
-  res.redirect('/frontend/');
-});
-app.get('/frontend/*', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'public', 'frontend', 'index.html'));
-});
+  // SPA fallback: serve index.html for any unmatched route (client-side routing)
+  app.get('*', (req, res, next) => {
+    const url = req.url || '';
+    // allow API and well-known routes to pass through
+    if (url.startsWith('/explain') || url.startsWith('/.well-known') || url.startsWith('/favicon.svg')) return next();
+    res.sendFile(path.join(frontendDist, 'index.html'));
+  });
+} else {
+  // Fallback to serving other public files when no built frontend present
+  app.use(express.static(path.join(__dirname, '..', 'public')));
+}
 
 app.post('/explain', (req, res) => {
   try {
@@ -60,7 +62,14 @@ app.post('/explain', (req, res) => {
 const port = process.env.PORT || 3000;
 // serve favicon at root
 app.get('/favicon.svg', (req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'favicon.svg'))
+  res.sendFile(path.join(__dirname, '..', 'public', 'favicon.svg'))
+});
+
+// Respond to DevTools appspecific lookup to avoid 404/CSP console noise
+app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
+  // minimal response, allows DevTools extensions to probe without errors
+  res.send(JSON.stringify({ installed: false }));
 });
 
 app.listen(port, () => console.log(`whystack listening on http://localhost:${port}`));

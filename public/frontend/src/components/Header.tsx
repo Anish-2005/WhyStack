@@ -12,9 +12,9 @@ export default function Header() {
       </div>
 
       <nav className="text-sm" style={{display:'flex', gap:12}}>
-        <a className="muted" href="#">Docs</a>
-        <a className="muted" href="#">Rules</a>
-        <a className="muted" href="#">About</a>
+        <a className="muted" href="/docs">Docs</a>
+        <a className="muted" href="/rules">Rules</a>
+        <a className="muted" href="/about">About</a>
       </nav>
     </header>
   )
