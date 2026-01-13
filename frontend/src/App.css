@@ -22,7 +22,7 @@
 .read-the-docs { color: rgba(230,238,248,0.65); }
 
 .editor-container { border-radius: 8px; overflow: hidden; border: 1px solid rgba(255,255,255,0.04) }
-.panel { background: transparent; text-align: left; width: 100%; box-sizing: border-box }
+.panel { text-align: left; width: 100%; box-sizing: border-box }
 
 /* Small responsive tweaks */
 @media (max-width: 720px) {

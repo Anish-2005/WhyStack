@@ -58,4 +58,9 @@ app.post('/explain', (req, res) => {
 });
 
 const port = process.env.PORT || 3000;
+// serve favicon at root
+app.get('/favicon.svg', (req, res) => {
+  res.sendFile(path.join(__dirname, '..', 'favicon.svg'))
+});
+
 app.listen(port, () => console.log(`whystack listening on http://localhost:${port}`));
