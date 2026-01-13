@@ -1,11 +1,6 @@
 <!-- prettier-ignore -->
 ## 🧠 WhyStack Backend — Express Rule Engine
 
-  ____        _               _       _        
- |  _ \  __ _| | _____  ____ _| | __ _| |_ ___  
- | | | |/ _` | |/ / _ \/ __/ _` |/ _` | __/ _ \ 
- | |_| | (_| |   <  __/ (_| (_| | (_| | ||  __/ 
- |____/ \__,_|_|\_\___|\___\__,_|\__,_|\__\___| 
 
 What this part does
  - Exposes POST `/explain` which accepts structured JSON and returns a deterministic explanation.

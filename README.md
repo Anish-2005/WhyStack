@@ -1,12 +1,6 @@
 <!-- prettier-ignore -->
 ## 🎯 WhyStack — Deterministic Explainable RCA Engine
 
-	____  _  _  _   _   _           _            _
- |  _ \| || || | | | | | __ _  __| | ___  _ __| | __
- | |_) | || || |_| | | |/ _` |/ _` |/ _ \| '__| |/ /
- |  __/|__   _|  _  | | (_| | (_| | (_) | |  |   <
- |_|       |_| |_| |_|_|\__,_|\__,_|\___/|_|  |_|\_\
-
 WhyStack ingests structured logs, metrics and traces and produces human-friendly, deterministic explanations of incidents — no ML, no randomness.
 
 Badges

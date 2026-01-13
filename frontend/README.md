@@ -1,11 +1,6 @@
 <!-- prettier-ignore -->
 ## 🚀 WhyStack Frontend — Vite + React
 
-  __        __   _ _   _             _
-  \ \      / /__| (_) |_ ___  _ __  / \
-   \ \ /\ / / _ \ | | __/ _ \| '_ \ /  /
-    \ V  V /  __/ | | || (_) | | | /\_/ 
-     \_/\_/ \___|_|_|\__\___/|_| |_\/   
 
 What this part does
  - Provides an interactive editor to paste structured JSON (logs, metrics, traces).
