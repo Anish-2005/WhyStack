@@ -1,0 +1,19 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>whystack — Explain My System Like I'm 5</title>
+  <style>body{font-family:system-ui,Segoe UI,Roboto,Arial;max-width:900px;margin:24px auto;padding:12px}textarea{width:100%;height:240px;font-family:monospace}pre{background:#f7f7f8;padding:12px;border-radius:6px;overflow:auto}</style>
+</head>
+<body>
+  <h1>whystack</h1>
+  <p>Paste an array of JSON logs and click <strong>Explain</strong>.</p>
+  <textarea id="input" placeholder='[ { "timestamp": "2026-01-13T16:12:00", "service": "api-gateway", "latency_ms": 920, "cpu_percent": 85, "status": 502, "error": "Bad Gateway" } ]'></textarea>
+  <div style="margin-top:8px"><button id="btn">Explain</button></div>
+  <h3>Result</h3>
+  <pre id="out">Nothing yet</pre>
+
+  <script src="/app.js"></script>
+</body>
+</html>
