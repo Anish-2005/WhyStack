@@ -10,6 +10,11 @@ const explainer = require('./engine/explainer');
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '5mb' }));
+// If a built frontend exists, serve it at root so asset paths like /assets/* work
+const frontendDist = path.join(__dirname, '..', 'public', 'frontend');
+app.use(express.static(frontendDist));
+
+// Fallback to serving other public files
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
 // Serve the SPA build at /frontend
