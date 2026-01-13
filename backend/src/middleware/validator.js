@@ -1,9 +1,7 @@
 const Ajv = require('ajv');
-const addFormats = require('ajv-formats');
 const path = require('path');
 
 const ajv = new Ajv({ allErrors: true, strict: false });
-addFormats(ajv);
 
 function loadSchema(name) {
   const p = path.join(__dirname, '..', 'schemas', name);

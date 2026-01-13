@@ -1,3 +1,5 @@
+import { Link } from 'react-router-dom'
+
 export default function Header() {
   return (
     <header className="mb-6" style={{display:'flex', alignItems:'center', justifyContent:'space-between', gap:12, flexWrap:'wrap'}}>
@@ -12,9 +14,9 @@ export default function Header() {
       </div>
 
       <nav className="text-sm" style={{display:'flex', gap:12}}>
-        <a className="muted" href="/docs">Docs</a>
-        <a className="muted" href="/rules">Rules</a>
-        <a className="muted" href="/about">About</a>
+        <Link className="muted" to="/docs">Docs</Link>
+        <Link className="muted" to="/rules">Rules</Link>
+        <Link className="muted" to="/about">About</Link>
       </nav>
     </header>
   )
