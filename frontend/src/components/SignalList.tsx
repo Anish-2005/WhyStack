@@ -3,16 +3,16 @@ import React from 'react'
 type Signal = { signal: string; severity?: string; startTime?: string; service?: string }
 
 export default function SignalList({ signals }: { signals: Signal[] }) {
-  if (!signals || signals.length === 0) return <div className="text-sm text-gray-500">No signals detected</div>
+  if (!signals || signals.length === 0) return <div className="text-sm muted">No signals detected</div>
 
   return (
-    <ul className="space-y-2">
+    <ul style={{display:'grid', gap:8}}>
       {signals.map((s, i) => (
-        <li key={i} className="flex items-start gap-3">
-          <span className={`inline-flex items-center px-2 py-0.5 rounded text-xs font-medium ${s.severity === 'high' ? 'bg-red-100 text-red-800' : s.severity === 'medium' ? 'bg-yellow-100 text-yellow-800' : 'bg-gray-100 text-gray-800'}`}>{s.severity || 'info'}</span>
+        <li key={i} style={{display:'flex', gap:10, alignItems:'flex-start'}}>
+          <span style={{minWidth:64, display:'inline-flex', alignItems:'center', justifyContent:'center', padding:'2px 8px', borderRadius:6, fontSize:12, fontWeight:600, color:'#071025', background: s.severity === 'high' ? '#fecaca' : s.severity === 'medium' ? '#fde68a' : '#d1fae5'}}>{(s.severity || 'info').toUpperCase()}</span>
           <div>
-            <div className="text-sm font-semibold">{s.signal}</div>
-            <div className="text-xs text-gray-500">{s.service || 'unknown'} • {s.startTime || 'time unknown'}</div>
+            <div style={{fontSize:14, fontWeight:600}}>{s.signal}</div>
+            <div className="muted" style={{fontSize:12}}>{s.service || 'unknown'} • {s.startTime || 'time unknown'}</div>
           </div>
         </li>
       ))}

@@ -16,13 +16,13 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
       <div className="flex items-center justify-between mb-3">
         <h2 className="text-lg font-medium">Input</h2>
         <div className="flex gap-2">
-          <button className="text-sm px-3 py-1 border rounded" onClick={() => {
+          <button className="btn btn-outline text-sm" onClick={() => {
             try {
               const json = JSON.stringify(JSON.parse(value), null, 2)
               onChange(json)
             } catch { alert('Invalid JSON') }
           }}>Prettify</button>
-          <button className="text-sm px-3 py-1 bg-indigo-600 text-white rounded" onClick={onExplain}>Explain</button>
+          <button className="btn btn-primary text-sm" onClick={onExplain}>Explain</button>
         </div>
       </div>
 
@@ -39,7 +39,8 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
       </div>
 
       <div className="mt-3 text-right">
-        <button className="text-sm px-3 py-1 border rounded mr-2" onClick={onLoadExample}>Load example</button>
+        <button className="btn btn-outline text-sm mr-2" onClick={onLoadExample}>Load example</button>
+        <a className="text-sm muted" href="#" onClick={(e)=>{e.preventDefault(); alert('Docs coming soon')}}>Quick help</a>
       </div>
     </div>
   )
