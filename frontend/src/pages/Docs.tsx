@@ -13,7 +13,7 @@ export default function Docs() {
         />
       </div>
 
-      <div className="relative z-10 max-w-7xl mx-auto w-full">
+      <div className="relative z-10 max-w-8xl mx-auto w-full">
         <Header />
 
         <motion.header initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">

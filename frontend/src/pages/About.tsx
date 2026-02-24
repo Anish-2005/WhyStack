@@ -11,7 +11,7 @@ export default function About() {
         />
       </div>
 
-      <div className="relative z-10 max-w-4xl mx-auto w-full">
+      <div className="relative z-10 max-w-8xl mx-auto w-full">
         <Header />
 
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="liquid-glass p-8 sm:p-12 text-center mb-8">

@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from 'react'
 import Editor from '@monaco-editor/react'
 import { Sparkles, FileJson, Play } from 'lucide-react'
 import { useTheme } from '../context/ThemeContext'
+import { Link } from 'react-router-dom'
 
 type Props = {
   value: string
@@ -71,9 +72,9 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
         <button className="btn btn-ghost text-xs hover:bg-white/10" onClick={onLoadExample} aria-label="Load example">
           Load Example Data
         </button>
-        <a className="text-xs text-brand-400 hover:text-brand-300 font-semibold transition-colors cursor-pointer" onClick={(e) => { e.preventDefault(); alert('Docs coming soon') }}>
+        <Link className="text-xs text-brand-400 hover:text-brand-300 font-semibold transition-colors cursor-pointer" to="/docs">
           Need Help?
-        </a>
+        </Link>
       </div>
     </div>
   )
