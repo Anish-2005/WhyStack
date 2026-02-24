@@ -1,18 +1,30 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+<svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
   <defs>
-    <linearGradient id="g1" x1="0%" x2="100%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#6EE7B7"/>
-      <stop offset="100%" stop-color="#60A5FA"/>
+    <linearGradient id="brandGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#818cf8" />
+      <stop offset="100%" stop-color="#4f46e5" />
     </linearGradient>
-    <linearGradient id="g2" x1="0%" x2="100%" y1="0%" y2="100%">
-      <stop offset="0%" stop-color="#A78BFA"/>
-      <stop offset="100%" stop-color="#F472B6"/>
-    </linearGradient>
+    <radialGradient id="glow" cx="0.5" cy="0.5" r="0.5">
+      <stop offset="0%" stop-color="#a5b4fc" stop-opacity="1" />
+      <stop offset="100%" stop-color="#4f46e5" stop-opacity="0" />
+    </radialGradient>
   </defs>
-  <rect width="100" height="100" rx="18" fill="url(#g1)" />
-  <g transform="translate(18,18)">
-    <circle cx="32" cy="20" r="14" fill="url(#g2)" opacity="0.95" />
-    <path d="M8 56 L24 36 L40 56" stroke="#0F172A" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity="0.9"/>
-    <rect x="46" y="34" width="16" height="30" rx="4" fill="#0F172A" opacity="0.9"/>
-  </g>
+
+  <!-- Top Stack Layer -->
+  <path d="M12 2.5L3.5 6.5L12 10.5L20.5 6.5L12 2.5Z" stroke="url(#brandGradient)" stroke-width="1.5" stroke-linejoin="round" />
+  <path d="M12 2.5L3.5 6.5L12 10.5L20.5 6.5L12 2.5Z" fill="url(#brandGradient)" fill-opacity="0.15" />
+  
+  <!-- Middle Stack Layer -->
+  <path d="M3.5 11.5L12 15.5L20.5 11.5" stroke="url(#brandGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.8" />
+  
+  <!-- Bottom Stack Layer -->
+  <path d="M3.5 16.5L12 20.5L20.5 16.5" stroke="url(#brandGradient)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" opacity="0.5" />
+
+  <!-- Glowing Root Cause Node -->
+  <circle cx="12" cy="15.5" r="4" fill="url(#glow)" opacity="0.9" />
+  <circle cx="12" cy="15.5" r="1.5" fill="#a5b4fc" />
+  
+  <!-- Tracer Beam -->
+  <path d="M12 2.5V15.5" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round" />
+  <path d="M12 15.5V20.5" stroke="#a5b4fc" stroke-width="1.5" stroke-linecap="round" stroke-dasharray="2 2" opacity="0.7" />
 </svg>

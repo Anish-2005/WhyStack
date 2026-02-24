@@ -1,8 +1,9 @@
 import { Link, useLocation } from 'react-router-dom'
 import React, { useState, useEffect } from 'react'
-import { Menu, X, Activity, Book, Shield, Info, ChevronRight } from 'lucide-react'
+import { Menu, X, Book, Shield, Info, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeToggle } from './ThemeToggle'
+import { LogoIcon } from './LogoIcon'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -27,14 +28,9 @@ export default function Header() {
       className="relative z-50 mb-6 sm:mb-8"
     >
       <div className="liquid-glass flex items-center justify-between p-2.5 sm:p-3 sm:px-5">
-        <Link to="/" className="flex items-center gap-3 sm:gap-4 transition-transform hover:scale-[1.02] group shrink-0" onClick={() => setOpen(false)}>
-          <div className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-gradient-to-br from-brand-500/20 to-purple-500/20 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.2)] group-hover:shadow-[0_0_30px_rgba(99,102,241,0.4)] transition-shadow duration-500 shrink-0">
-            <motion.div
-              animate={{ rotate: 360 }}
-              transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
-              className="absolute inset-0 rounded-xl sm:rounded-2xl border border-white/5 border-t-white/20"
-            />
-            <Activity className="h-5 w-5 sm:h-6 sm:w-6 text-brand-300" />
+        <Link to="/" className="flex items-center gap-3 sm:gap-4 transition-transform hover:translate-y-[-1px] group shrink-0" onClick={() => setOpen(false)}>
+          <div className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] group-hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] group-hover:bg-white/10 transition-all duration-500 shrink-0">
+            <LogoIcon className="h-6 w-6 sm:h-7 sm:h-7 text-brand-400 group-hover:text-brand-300 transition-colors duration-500" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
