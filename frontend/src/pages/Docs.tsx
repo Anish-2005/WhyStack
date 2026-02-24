@@ -35,7 +35,7 @@ export default function Docs() {
 
         <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.3 }} className="liquid-glass p-8 mb-8">
           <h3 className="text-xl font-bold mb-4 text-white">Example Request</h3>
-          <pre className="bg-[#010103]/80 p-6 rounded-2xl text-sm overflow-auto font-mono text-slate-300 shadow-inner border border-white/5">
+          <pre className="bg-surface/80 p-6 rounded-2xl text-sm overflow-auto font-mono text-slate-300 shadow-inner border border-white/5">
             {`{
   "logs": [
     { "timestamp": "2026-01-13T16:12:00Z", "service": "api-gateway", "latency_ms": 920, "cpu_percent": 85, "status": 502, "error": "Bad Gateway" }

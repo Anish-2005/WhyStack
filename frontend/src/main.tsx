@@ -6,16 +6,19 @@ import App from './App'
 import Docs from './pages/Docs'
 import Rules from './pages/Rules'
 import About from './pages/About'
+import { ThemeProvider } from './context/ThemeContext'
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>
-    <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/docs" element={<Docs />} />
-        <Route path="/rules" element={<Rules />} />
-        <Route path="/about" element={<About />} />
-      </Routes>
-    </BrowserRouter>
+    <ThemeProvider>
+      <BrowserRouter>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/docs" element={<Docs />} />
+          <Route path="/rules" element={<Rules />} />
+          <Route path="/about" element={<About />} />
+        </Routes>
+      </BrowserRouter>
+    </ThemeProvider>
   </StrictMode>,
 )

@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import React, { useState } from 'react'
 import { Menu, X, Activity } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { ThemeToggle } from './ThemeToggle'
 
 export default function Header() {
   const [open, setOpen] = useState(false)
@@ -33,23 +34,27 @@ export default function Header() {
         </Link>
 
         {/* Desktop Nav */}
-        <nav className="hidden sm:flex items-center gap-8">
-          <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/docs">Docs</Link>
-          <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/rules">Rules</Link>
-          <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/about">About</Link>
-        </nav>
+        <div className="flex items-center gap-6">
+          <nav className="hidden sm:flex items-center gap-8">
+            <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/docs">Docs</Link>
+            <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/rules">Rules</Link>
+            <Link className="text-sm font-semibold text-slate-300 hover:text-white hover:text-liquid-glow transition-all" to="/about">About</Link>
+          </nav>
 
-        {/* Mobile Hamburger */}
-        <button
-          className="sm:hidden btn btn-outline p-2.5 rounded-xl border-white/10"
-          onClick={() => setOpen(o => !o)}
-          aria-label="Toggle menu"
-        >
-          <AnimatePresence mode="wait">
-            {open ? <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X className="h-5 w-5" /></motion.div> :
-              <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}><Menu className="h-5 w-5" /></motion.div>}
-          </AnimatePresence>
-        </button>
+          <ThemeToggle />
+
+          {/* Mobile Hamburger */}
+          <button
+            className="sm:hidden btn btn-outline p-2.5 rounded-xl border-white/10"
+            onClick={() => setOpen(o => !o)}
+            aria-label="Toggle menu"
+          >
+            <AnimatePresence mode="wait">
+              {open ? <motion.div key="close" initial={{ rotate: -90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: 90, opacity: 0 }}><X className="h-5 w-5" /></motion.div> :
+                <motion.div key="open" initial={{ rotate: 90, opacity: 0 }} animate={{ rotate: 0, opacity: 1 }} exit={{ rotate: -90, opacity: 0 }}><Menu className="h-5 w-5" /></motion.div>}
+            </AnimatePresence>
+          </button>
+        </div>
       </div>
 
       {/* Mobile Nav */}

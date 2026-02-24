@@ -47,7 +47,7 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
         </div>
       </div>
 
-      <div className="flex-1 relative bg-[#010103]/80 m-4 rounded-2xl overflow-hidden border border-white/[0.05] shadow-inner">
+      <div className="flex-1 relative bg-surface/80 m-4 rounded-2xl overflow-hidden border border-white/10 shadow-inner">
         {monacoReady ? (
           <div className="absolute inset-0 pt-2">
             <Editor
