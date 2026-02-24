@@ -1,6 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react'
 import Editor from '@monaco-editor/react'
 import { Sparkles, FileJson, Play } from 'lucide-react'
+import { useTheme } from '../context/ThemeContext'
 
 type Props = {
   value: string
@@ -10,6 +11,7 @@ type Props = {
 }
 
 export default function EditorPanel({ value, onChange, onExplain, onLoadExample }: Props) {
+  const { theme } = useTheme()
   const editorRef = useRef<any>(null)
   const [monacoReady, setMonacoReady] = useState(true)
 
@@ -33,16 +35,16 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
           <div className="p-2 bg-brand-500/10 rounded-xl border border-white/5 shadow-inner">
             <FileJson className="h-5 w-5 text-brand-400" />
           </div>
-          <h2 className="text-xl font-bold text-white tracking-wide font-sans">Input Logs</h2>
+          <h2 className={`text-xl font-bold tracking-wide font-sans ${theme === 'light' ? '!text-black' : 'text-white'}`}>Input Logs</h2>
         </div>
         <div className="flex items-center gap-3">
           <button className="btn btn-outline py-2 px-4 shadow-sm" onClick={prettify} aria-label="Prettify JSON">
-            <Sparkles className="h-4 w-4 text-brand-300" />
-            <span className="hidden sm:inline font-semibold opacity-90">Prettify</span>
+            <Sparkles className={`h-4 w-4 ${theme === 'light' ? '!text-black' : 'text-brand-300'}`} />
+            <span className={`hidden sm:inline font-semibold opacity-90 ${theme === 'light' ? '!text-black' : ''}`}>Prettify</span>
           </button>
           <button className="btn btn-primary shadow-brand-500/50" onClick={onExplain} aria-label="Explain logs">
-            <Play className="h-4 w-4 fill-white" />
-            <span className="font-bold tracking-wider uppercase text-xs">Analyze</span>
+            <Play className={`h-4 w-4 ${theme === 'light' ? 'fill-black' : 'fill-white'}`} />
+            <span className={`font-bold tracking-wider uppercase text-xs ${theme === 'light' ? '!text-black' : ''}`}>Analyze</span>
           </button>
         </div>
       </div>
@@ -53,7 +55,7 @@ export default function EditorPanel({ value, onChange, onExplain, onLoadExample 
             <Editor
               height="100%"
               defaultLanguage="json"
-              theme="vs-dark"
+              theme={theme === 'light' ? 'light' : 'vs-dark'}
               value={value}
               onChange={(v) => onChange(v || '')}
               onMount={(editor) => { editorRef.current = editor }}

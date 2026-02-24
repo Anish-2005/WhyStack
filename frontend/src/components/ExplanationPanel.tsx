@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
 import { FileSearch, Activity, BrainCircuit, Code2, Copy, AlertTriangle, Info, ShieldAlert } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
+import { useTheme } from '../context/ThemeContext'
 
 type ExplainResponse = {
   summary?: string
@@ -20,6 +21,7 @@ function getSeverityDetails(sev: string) {
 
 export default function ExplanationPanel({ result }: { result: ExplainResponse | null }) {
   const [showTrace, setShowTrace] = useState(false)
+  const { theme } = useTheme()
 
   if (!result) {
     return (
@@ -34,7 +36,7 @@ export default function ExplanationPanel({ result }: { result: ExplainResponse |
             <BrainCircuit className="w-8 h-8 text-brand-400/80" />
           </div>
         </div>
-        <h3 className="text-2xl font-bold text-white mb-2 tracking-wide font-sans text-liquid-glow">Awaiting Telemetry</h3>
+        <h3 className={`text-2xl font-bold mb-2 tracking-wide font-sans text-liquid-glow ${theme === 'light' ? '!text-black' : 'text-white'}`}>Awaiting Telemetry</h3>
         <p className="text-[15px] text-slate-400 max-w-[300px] leading-relaxed">Run the analysis to synthesize root cause attributions and signals.</p>
       </div>
     )
@@ -128,7 +130,7 @@ export default function ExplanationPanel({ result }: { result: ExplainResponse |
                         <div className="font-semibold text-slate-100 text-[15px] leading-snug mb-1">{c.cause || c}</div>
                         {c.score !== undefined && <div className="text-[11px] text-slate-400 font-mono tracking-wider opacity-60">score: {c.score.toFixed(2)}</div>}
                       </div>
-                      <div className="text-brand-300 font-black text-xl bg-black/40 px-2 py-1 rounded-lg border border-white/5 shadow-inner">{pct}%</div>
+                      <div className="text-brand-300 font-black text-xl bg-surface/60 px-2 py-1 rounded-lg border border-white/5 shadow-inner">{pct}%</div>
                     </div>
                     <div className="h-2 w-full bg-[#010103]/80 rounded-full overflow-hidden border border-white/5 p-[1px]">
                       <motion.div
@@ -178,7 +180,7 @@ export default function ExplanationPanel({ result }: { result: ExplainResponse |
                           {(s.service || '')}{(s.service && (s.startTime || s.timestamp || s.time)) ? ' • ' : ''}{humanTime(s.startTime || s.timestamp || s.time || '')}
                         </div>
                         {s.info && Object.keys(s.info).length > 0 && (
-                          <div className="text-[11px] text-slate-400/80 font-mono truncate bg-[#010103]/40 p-1.5 rounded border border-white/5">
+                          <div className="text-[11px] text-slate-400/80 font-mono truncate bg-surface/40 p-1.5 rounded border border-white/5">
                             {Object.entries(s.info).map(([k, v]) => `${k}: ${v}`).join(', ')}
                           </div>
                         )}

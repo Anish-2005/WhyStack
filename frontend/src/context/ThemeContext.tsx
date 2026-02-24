@@ -4,7 +4,7 @@ type Theme = 'dark' | 'light'
 
 type ThemeContextType = {
     theme: Theme
-    toggleTheme: () => void
+    toggleTheme: (e?: React.MouseEvent) => void
 }
 
 const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
@@ -30,7 +30,58 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
         }
     }, [theme])
 
-    const toggleTheme = () => setTheme(t => (t === 'light' ? 'dark' : 'light'))
+    const toggleTheme = (e?: React.MouseEvent) => {
+        const isDark = theme === 'dark'
+
+        // @ts-ignore - startViewTransition is not yet in all TS types
+        if (!document.startViewTransition || !e) {
+            setTheme(isDark ? 'light' : 'dark')
+            return
+        }
+
+        const x = e.clientX
+        const y = e.clientY
+        const endRadius = Math.hypot(
+            Math.max(x, window.innerWidth - x),
+            Math.max(y, window.innerHeight - y)
+        )
+
+        // @ts-ignore
+        const transition = document.startViewTransition(() => {
+            // Apply the new theme to the DOM instantly so the transition captures it correctly
+            if (isDark) {
+                document.documentElement.classList.add('light')
+            } else {
+                document.documentElement.classList.remove('light')
+            }
+            // Update React state
+            import('react-dom').then((ReactDOM) => {
+                ReactDOM.flushSync(() => {
+                    setTheme(isDark ? 'light' : 'dark')
+                })
+            }).catch(() => {
+                setTheme(isDark ? 'light' : 'dark')
+            })
+        })
+
+        transition.ready.then(() => {
+            const clipPath = [
+                `circle(0px at ${x}px ${y}px)`,
+                `circle(${endRadius}px at ${x}px ${y}px)`
+            ]
+
+            document.documentElement.animate(
+                {
+                    clipPath: clipPath,
+                },
+                {
+                    duration: 500,
+                    easing: "ease-in-out",
+                    pseudoElement: "::view-transition-new(root)",
+                }
+            )
+        })
+    }
 
     return (
         <ThemeContext.Provider value={{ theme, toggleTheme }}>

@@ -13,7 +13,7 @@ export default function Docs() {
         />
       </div>
 
-      <div className="relative z-10 max-w-5xl mx-auto w-full">
+      <div className="relative z-10 max-w-7xl mx-auto w-full">
         <Header />
 
         <motion.header initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
@@ -46,7 +46,7 @@ export default function Docs() {
 
         <motion.section initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.4 }} className="liquid-glass p-8">
           <h3 className="text-xl font-bold mb-4 text-white">Example Response</h3>
-          <pre className="bg-[#010103]/80 p-6 rounded-2xl text-sm overflow-auto font-mono text-slate-300 shadow-inner border border-white/5">
+          <pre className="bg-surface/80 p-6 rounded-2xl text-sm overflow-auto font-mono text-slate-300 shadow-inner border border-white/5">
             {`{
   "summary": "Downstream dependency failure",
   "explanation": "The api-gateway likely misbehaved because Downstream dependency failure. This started around 2026-01-13T16:12:00Z when signals such as error_event, dependency_failure were observed.",

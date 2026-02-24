@@ -10,6 +10,7 @@
 	--color-brand-900: #312e81;
 
 	--color-bg-base: #030305;
+	--color-surface: #010103;
 
 	--font-sans: "Inter", "Outfit", ui-sans-serif, system-ui, sans-serif;
 	--font-mono: "JetBrains Mono", ui-monospace, monospace;
@@ -20,29 +21,27 @@
 
 @layer base {
 	:root {
-		--bg-base: #030305;
-		--color-surface: #010103;
 		--glass-shadow: rgba(0, 0, 0, 0.3);
+		--glass-bg: rgba(255, 255, 255, 0.03);
+		--glass-border: rgba(255, 255, 255, 0.08);
+		--glass-hover-bg: rgba(255, 255, 255, 0.06);
+		--glass-inner-shadow: rgba(255, 255, 255, 0.02);
+
 		--mesh-1: rgba(79, 70, 229, 0.15);
 		--mesh-2: rgba(139, 92, 246, 0.15);
 		--mesh-3: rgba(56, 189, 248, 0.05);
 	}
 
 	.light {
-		--bg-base: #f8fafc;
+		--color-bg-base: #f8fafc;
 		--color-surface: rgba(255, 255, 255, 0.7);
 
-		/* Invert white to deep slate - magically makes all bg-white/10 into cool dark glass */
-		--color-white: #020617;
-
-		/* Invert text slates so text-slate-200 reads as dark text */
-		--color-slate-100: #1e293b;
-		--color-slate-200: #334155;
-		--color-slate-300: #475569;
-		--color-slate-400: #64748b;
-
-		/* Lighter shadows */
-		--glass-shadow: rgba(0, 0, 0, 0.05);
+		/* Frosted glass is white in light mode to provide depth and contrast */
+		--glass-bg: rgba(255, 255, 255, 0.6);
+		--glass-border: rgba(0, 0, 0, 0.1);
+		--glass-hover-bg: rgba(255, 255, 255, 0.95);
+		--glass-inner-shadow: rgba(0, 0, 0, 0.02);
+		--glass-shadow: rgba(0, 0, 0, 0.08);
 
 		/* Popping mesh gradients */
 		--mesh-1: rgba(79, 70, 229, 0.1);
@@ -52,14 +51,72 @@
 		--color-brand-300: #4f46e5;
 	}
 
+	/* Explicit Text Inversions for Light Mode */
+	.light .text-white {
+		color: #020617 !important;
+	}
+
+	.light .text-slate-100 {
+		color: #0f172a !important;
+	}
+
+	.light .text-slate-200 {
+		color: #1e293b !important;
+	}
+
+	.light .text-slate-300 {
+		color: #334155 !important;
+	}
+
+	.light .text-slate-400 {
+		color: #475569 !important;
+	}
+
+	.light .text-slate-500 {
+		color: #64748b !important;
+	}
+
+	/* Explicit Background & Border Inversions for specific Tailwind utils */
+	.light .bg-white\/5 {
+		background-color: rgba(0, 0, 0, 0.03) !important;
+	}
+
+	.light .bg-white\/10 {
+		background-color: rgba(0, 0, 0, 0.06) !important;
+	}
+
+	.light .bg-white\/\[0\.01\] {
+		background-color: rgba(0, 0, 0, 0.01) !important;
+	}
+
+	.light .bg-white\/\[0\.02\] {
+		background-color: rgba(0, 0, 0, 0.02) !important;
+	}
+
+	.light .bg-white\/\[0\.05\] {
+		background-color: rgba(0, 0, 0, 0.04) !important;
+	}
+
+	.light .border-white\/5 {
+		border-color: rgba(0, 0, 0, 0.05) !important;
+	}
+
+	.light .border-white\/10 {
+		border-color: rgba(0, 0, 0, 0.1) !important;
+	}
+
+	.light .border-white\/\[0\.05\] {
+		border-color: rgba(0, 0, 0, 0.05) !important;
+	}
+
 	html,
 	body,
 	#root {
-		@apply h-full min-h-screen text-slate-200 antialiased selection:bg-brand-500/30 selection:text-white bg-bg-base overflow-x-hidden transition-colors duration-700;
+		@apply h-full min-h-screen text-slate-200 antialiased selection:bg-brand-500/30 selection:text-white overflow-x-hidden;
 	}
 
 	body {
-		background-color: var(--bg-base);
+		background-color: var(--color-bg-base);
 		background-image:
 			radial-gradient(ellipse at 10% 20%, var(--mesh-1) 0%, transparent 40%),
 			radial-gradient(ellipse at 90% 80%, var(--mesh-2) 0%, transparent 40%),
@@ -82,10 +139,22 @@
 	}
 }
 
+::view-transition-old(root),
+::view-transition-new(root) {
+	animation: none;
+	mix-blend-mode: normal;
+}
+
 @layer components {
 	.liquid-glass {
-		@apply bg-white/[0.03] backdrop-blur-[32px] border border-white/[0.08] rounded-3xl relative overflow-hidden;
-		box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 8px 32px 0 var(--glass-shadow);
+		background-color: var(--glass-bg);
+		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: blur(32px);
+		border: 1px solid var(--glass-border);
+		border-radius: 1.5rem;
+		position: relative;
+		overflow: hidden;
+		box-shadow: inset 0 0 20px var(--glass-inner-shadow), 0 8px 32px 0 var(--glass-shadow);
 	}
 
 	.liquid-glass::before {
@@ -95,44 +164,123 @@
 	}
 
 	.liquid-glass-interactive {
-		@apply liquid-glass transition-all duration-500 hover:bg-white/[0.06] hover:border-brand-500/30;
+		background-color: var(--glass-bg);
+		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: blur(32px);
+		border: 1px solid var(--glass-border);
+		border-radius: 1.5rem;
+		position: relative;
+		overflow: hidden;
+		transition: all 0.5s ease;
+		box-shadow: inset 0 0 20px var(--glass-inner-shadow), 0 8px 32px 0 var(--glass-shadow);
 	}
 
 	.liquid-glass-interactive:hover {
-		box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 8px 32px 0 rgba(99, 102, 241, 0.15);
+		background-color: var(--glass-hover-bg);
+		border-color: rgba(99, 102, 241, 0.3);
+		box-shadow: inset 0 0 20px var(--glass-inner-shadow), 0 8px 32px 0 rgba(99, 102, 241, 0.15);
 	}
 
 	.btn {
-		@apply relative overflow-hidden inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-500 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-transparent focus:ring-brand-500 disabled:opacity-50 disabled:cursor-not-allowed;
+		position: relative;
+		overflow: hidden;
+		display: inline-flex;
+		align-items: center;
+		justify-content: center;
+		gap: 0.5rem;
+		padding: 0.625rem 1.25rem;
+		border-radius: 1rem;
+		font-size: 0.875rem;
+		line-height: 1.25rem;
+		font-weight: 600;
+		transition: all 0.5s ease;
+		cursor: pointer;
+	}
+
+	.btn:focus {
+		outline: 2px solid transparent;
+		outline-offset: 2px;
+	}
+
+	.btn:disabled {
+		opacity: 0.5;
+		cursor: not-allowed;
 	}
 
 	.btn-primary {
-		@apply bg-brand-600 border border-brand-400/30 hover:bg-brand-500 hover:scale-[1.02];
+		background-color: var(--color-brand-600);
+		border: 1px solid rgba(129, 140, 248, 0.3);
 		color: #ffffff !important;
 		box-shadow: 0 0 20px rgba(79, 70, 229, 0.3);
 	}
 
 	.btn-primary:hover {
+		background-color: var(--color-brand-500);
+		transform: scale(1.02);
 		box-shadow: 0 0 30px rgba(79, 70, 229, 0.5);
 	}
 
 	.btn-primary::after {
 		content: "";
-		@apply absolute inset-0 -translate-x-full hover:translate-x-full transition-transform duration-1000 ease-in-out;
+		position: absolute;
+		inset: 0;
+		transform: translateX(-100%);
+		transition: transform 1s ease-in-out;
 		background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
 	}
 
+	.btn-primary:hover::after {
+		transform: translateX(100%);
+	}
+
 	.btn-outline {
-		@apply bg-white/[0.02] backdrop-blur-[32px] border border-white/[0.1] rounded-2xl relative overflow-hidden text-slate-400 hover:text-slate-200 hover:bg-white/10 hover:border-white/20 hover:scale-[1.02];
-		box-shadow: inset 0 0 20px rgba(255, 255, 255, 0.02), 0 8px 32px 0 var(--glass-shadow);
+		background-color: var(--glass-bg);
+		border: 1px solid var(--glass-border);
+		color: var(--color-slate-400);
+		border-radius: 1rem;
+		position: relative;
+		overflow: hidden;
+		box-shadow: inset 0 0 20px var(--glass-inner-shadow), 0 8px 32px 0 var(--glass-shadow);
+		backdrop-filter: blur(32px);
+		-webkit-backdrop-filter: blur(32px);
+	}
+
+	.light .btn-outline {
+		color: #1e293b;
+	}
+
+	.btn-outline:hover {
+		color: var(--color-slate-200);
+		background-color: var(--glass-hover-bg);
+		border-color: rgba(255, 255, 255, 0.2);
+		transform: scale(1.02);
+	}
+
+	.light .btn-outline:hover {
+		color: #020617;
+		border-color: rgba(0, 0, 0, 0.2);
 	}
 
 	.btn-ghost {
-		@apply text-slate-400 border border-transparent rounded-xl px-3 py-1.5 transition-all duration-300;
+		color: var(--color-slate-400);
+		border: 1px solid transparent;
+		border-radius: 0.75rem;
+		padding: 0.375rem 0.75rem;
+		transition: all 0.3s ease;
+	}
+
+	.light .btn-ghost {
+		color: #475569;
 	}
 
 	.btn-ghost:hover {
-		@apply text-slate-200 bg-white/5;
+		color: var(--color-slate-200);
+		background-color: rgba(255, 255, 255, 0.05);
+	}
+
+	.light .btn-ghost:hover {
+		color: #020617;
+		background-color: rgba(0, 0, 0, 0.05);
 	}
 }
 
@@ -164,6 +312,11 @@
 	.text-liquid-glow {
 		@apply text-transparent bg-clip-text bg-gradient-to-r from-brand-300 via-white to-brand-300;
 		text-shadow: 0 0 30px rgba(165, 180, 252, 0.3);
+	}
+
+	.light .text-liquid-glow {
+		@apply bg-gradient-to-r from-brand-600 via-black to-brand-600;
+		text-shadow: 0 0 30px rgba(99, 102, 241, 0.2);
 	}
 
 	.liquid-gradient {
