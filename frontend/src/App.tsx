@@ -4,6 +4,7 @@ import Header from './components/Header'
 import EditorPanel from './components/EditorPanel'
 import ExplanationPanel from './components/ExplanationPanel'
 import { explain as explainApi, ApiRequestError } from './utils/api'
+import { parseTelemetryInput } from './utils/input'
 import type { ApiError, ExplainResponse, TelemetryEvent } from './types/api'
 import './App.css'
 
@@ -43,27 +44,6 @@ function generateRandomExample() {
   return JSON.stringify(entries, null, 2)
 }
 
-function isTelemetryEvent(value: unknown): value is TelemetryEvent {
-  return typeof value === 'object' && value !== null && !Array.isArray(value)
-}
-
-function parseLogs(value: string): TelemetryEvent[] {
-  const parsed: unknown = JSON.parse(value)
-  let candidate: unknown = parsed
-
-  if (!Array.isArray(candidate) && typeof candidate === 'object' && candidate !== null) {
-    candidate = (candidate as { logs?: unknown }).logs
-  }
-
-  if (!Array.isArray(candidate) || !candidate.every(isTelemetryEvent)) {
-    throw new Error('Enter a JSON array of telemetry events, or an object with a logs array.')
-  }
-  if (candidate.length === 0) throw new Error('Add at least one telemetry event before analyzing.')
-  if (candidate.length > 5000) throw new Error('The maximum is 5,000 events per analysis.')
-
-  return candidate
-}
-
 function getErrorMessage(error: unknown) {
   return error instanceof Error ? error.message : 'An unexpected error occurred.'
 }
@@ -81,7 +61,7 @@ export default function App() {
     setResult(null)
     setError(null)
     try {
-      const logs = parseLogs(value)
+      const logs = parseTelemetryInput(value)
       setResult(await explainApi(logs))
     } catch (caught: unknown) {
       const message = getErrorMessage(caught)
