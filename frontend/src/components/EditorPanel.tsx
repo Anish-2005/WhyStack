@@ -3,7 +3,7 @@ import { FileJson, Play, Sparkles } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { useTheme } from '../context/useTheme'
 
-const Editor = lazy(() => import('@monaco-editor/react'))
+const Editor = lazy(() => import('./JsonEditor'))
 
 type Props = {
   value: string

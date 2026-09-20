@@ -70,5 +70,5 @@ export function explain(logs: TelemetryEvent[]): Promise<ExplainResponse> {
 }
 
 export function fetchRules(): Promise<{ rules: RuleSummary[] }> {
-  return requestJson<{ rules: RuleSummary[] }>('/rules', { method: 'GET' })
+  return requestJson<{ rules: RuleSummary[] }>('/api/rules', { method: 'GET' })
 }

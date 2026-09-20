@@ -34,7 +34,7 @@ describe('analysis API client', () => {
 
     await expect(fetchRules()).resolves.toEqual({ rules })
     expect(fetchMock).toHaveBeenCalledWith(
-      expect.stringMatching(/\/rules$/),
+      expect.stringMatching(/\/api\/rules$/),
       expect.objectContaining({ method: 'GET' }),
     )
   })

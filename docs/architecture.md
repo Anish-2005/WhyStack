@@ -6,7 +6,7 @@
 flowchart LR
   User[On-call engineer] --> UI[React SPA]
   UI -->|POST /explain| Proxy[Vercel rewrite or same-origin host]
-  UI -->|GET /rules| Proxy
+  UI -->|GET /api/rules| Proxy
   Proxy --> API[Express app]
   API --> Guard[Helmet, CORS, JSON limit, rate limit, schema validation]
   Guard --> Cache[Process-local LRU cache]
@@ -19,7 +19,7 @@ flowchart LR
   API --> Metrics[Health and Prometheus routes]
 ~~~
 
-The application has no persistent data store. The cache is per process and is cleared on restart. The frontend uses a same-origin API path by default; Vite proxies those paths during local development and Vercel rewrites them in the hosted frontend.
+The application has no persistent data store. The cache is per process and is cleared on restart. The frontend uses same-origin API paths by default; Vite proxies /explain and /api/rules during local development and Vercel rewrites them in the hosted frontend. The backend’s /rules endpoint remains directly available to API clients, while the frontend /rules route remains reloadable.
 
 ## Runtime boundaries
 
@@ -30,7 +30,7 @@ The application has no persistent data store. The cache is per process and is cl
 
 ## Local development
 
-Run the backend on port 3000 and frontend on port 5173. Vite proxies /explain and /rules to the backend. Use npm ci in each package directory to install from its lockfile.
+Run the backend on port 3000 and frontend on port 5173. Vite proxies /explain and /api/rules to the backend. Use npm ci in each package directory to install from its lockfile.
 
 ## Hosted deployment
 

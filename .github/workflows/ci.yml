@@ -59,3 +59,24 @@ jobs:
       - uses: actions/checkout@v7
       - run: docker compose config -q
       - run: docker compose build
+
+  e2e:
+    name: Browser end-to-end checks
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            backend/package-lock.json
+            frontend/package-lock.json
+      - run: npm ci
+        working-directory: backend
+      - run: npm ci
+        working-directory: frontend
+      - run: npx playwright install --with-deps chromium
+        working-directory: frontend
+      - run: npm run test:e2e
+        working-directory: frontend

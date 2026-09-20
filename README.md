@@ -25,7 +25,7 @@ npm ci
 npm run dev
 ~~~
 
-Open http://localhost:5173. The Vite development server proxies /explain and /rules to the backend on port 3000. Paste either a JSON event array or an object containing a logs array. Each event must be an object; a request accepts 1–5,000 events and is limited to 2 MB by default.
+Open http://localhost:5173. The Vite development server proxies /explain and /api/rules to the backend on port 3000. The backend’s public rule endpoint remains /rules; using /api/rules in the frontend leaves /rules available for the app’s rules page and direct links. Paste either a JSON event array or an object containing a logs array. Each event must be an object; a request accepts 1–5,000 events and is limited to 2 MB by default.
 
 Set VITE_BACKEND_URL in the frontend environment only when the browser should call a different backend origin directly. Otherwise, requests use the same origin and the configured host proxy.
 
@@ -38,6 +38,7 @@ npm audit --audit-level=moderate
 
 cd ../frontend
 npm test
+npm run test:e2e
 npm run lint
 npm run build
 npm audit --audit-level=moderate
