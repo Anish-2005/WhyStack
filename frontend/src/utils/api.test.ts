@@ -27,6 +27,18 @@ describe('analysis API client', () => {
     )
   })
 
+  it('loads rule summaries from the rules endpoint', async () => {
+    const rules = [{ id: 'api-5xx', conditions: ['5xx'], cause: 'Upstream failure', confidence: 0.8 }]
+    const fetchMock = vi.fn().mockResolvedValue(new Response(JSON.stringify({ rules }), { status: 200 }))
+    vi.stubGlobal('fetch', fetchMock)
+
+    await expect(fetchRules()).resolves.toEqual({ rules })
+    expect(fetchMock).toHaveBeenCalledWith(
+      expect.stringMatching(/\/rules$/),
+      expect.objectContaining({ method: 'GET' }),
+    )
+  })
+
   it('preserves validation details from backend errors', async () => {
     const payload = {
       error: 'invalid request',

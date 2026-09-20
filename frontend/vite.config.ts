@@ -9,7 +9,11 @@ export default defineConfig({
       '/explain': {
         target: 'http://localhost:3000',
         changeOrigin: true,
-      }
+      },
+      '/rules': {
+        target: 'http://localhost:3000',
+        changeOrigin: true,
+      },
     }
   },
   test: {
