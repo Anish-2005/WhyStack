@@ -1,78 +1,75 @@
-<!-- prettier-ignore -->
-## 🎯 WhyStack — Deterministic Explainable RCA Engine
+# WhyStack
 
-WhyStack ingests structured logs, metrics and traces and produces human-friendly, deterministic explanations of incidents — no ML, no randomness.
+WhyStack analyzes structured telemetry and returns deterministic, evidence-backed incident explanations. It is designed for developers and on-call engineers who need to understand which signals and rules support a likely cause. The engine does not use machine learning; its ranking scores are heuristics, not calibrated probabilities.
 
-Badges
- - Tech: Node · Express · Vite · React · TypeScript
- - Live backend: https://whystack.onrender.com
+## Stack
 
-What the app does (big-picture)
- - Accepts structured event streams (JSON logs, metrics, traces).
- - Normalizes and extracts signals from the payload.
- - Applies a deterministic rule engine to match patterns and infer causal chains.
- - Ranks candidate root causes and generates concise, traceable explanations.
- - Returns an explanation object and an audit trail showing which rules fired.
+- Frontend: React 18, TypeScript, Vite 8, React Router 7, Monaco Editor, Tailwind CSS 4.
+- Backend: Node.js 24, Express 4, Ajv validation, an in-memory LRU response cache, and Prometheus metrics.
+- Storage: none. Requests and cache entries remain in process memory.
+- Deployment: Vercel static frontend and Render backend, or the bundled Docker image described below.
 
-Visual flow (text diagram)
+## Run locally
 
- Client Editor  --->  Backend /explain  --->  Parser  --->  Signal Extractor
-			|                                         |              |
-			v                                         v              v
-	(JSON input)  <---  Explanation <- Rule Engine <- Ranking <- Trace & Evidence
+Use Node.js 24 (Vite 8 requires Node.js 20.19+ or 22.12+).
 
-Key outputs you will see in the UI
- - Summary: one-sentence root-cause statement.
- - Causes: ranked list with confidence-like scores (deterministic ranking).
- - Evidence: snippets from logs/metrics that matched rules.
- - Audit: which rules matched and why (traceable rule IDs).
-
-Why it's useful
- - Fast incident triage without opaque models.
- - Fully auditable reasoning for postmortems and compliance.
- - Lightweight enough to run locally or as a small hosted service.
-
-Quick start (developer)
- 1. Backend: open `backend/` and run:
-
-```powershell
+~~~powershell
+# Terminal 1
 cd backend
-npm install
+npm ci
 npm run dev
-```
 
-2. Frontend (dev): open `frontend/` and run:
-
-```powershell
+# Terminal 2
 cd frontend
-npm install
+npm ci
 npm run dev
-```
+~~~
 
-3. Use the UI: open http://localhost:5173 (Vite) or your backend preview and paste JSON, then click Explain.
+Open http://localhost:5173. The Vite development server proxies /explain and /rules to the backend on port 3000. Paste either a JSON event array or an object containing a logs array. Each event must be an object; a request accepts 1–5,000 events and is limited to 2 MB by default.
 
-Project layout (current)
- - `backend/` — Express server, rule engine (`engine/*`), routes
- - `frontend/` — Vite + React SPA, editor + explanation panels
- - `.env` — frontend env (optional `VITE_BACKEND_URL`)
+Set VITE_BACKEND_URL in the frontend environment only when the browser should call a different backend origin directly. Otherwise, requests use the same origin and the configured host proxy.
 
-Deployment notes
- - Backend is deployed at: https://whystack.onrender.com
- - Frontend can be deployed to Vercel; `frontend/vercel.json` includes rewrites so `/explain` is proxied to the Render backend and SPA routes fallback to `index.html`.
+## Checks
 
-Guiding principles
- - Deterministic: same input ⇒ same explanation every time.
- - Explainable: include evidence and rule IDs for every conclusion.
- - Minimal: small dependency surface, easy to audit.
+~~~powershell
+cd backend
+npm test
+npm audit --audit-level=moderate
 
-Contribute
- - Add rules under `backend/src/engine/rules` (follow existing rule format).
- - Add parser adapters if you have new log formats.
+cd ../frontend
+npm test
+npm run lint
+npm run build
+npm audit --audit-level=moderate
+~~~
 
-License & contact
- - MIT
- - Questions / PRs: open an issue in this repo.
+GitHub Actions runs these checks on pushes to main and on pull requests.
 
----
+## API
 
-For more details about source layout and engine internals, see the `backend/src/engine` folder and the `frontend/src` UI components.
+- POST /explain — analyze {"logs": [...]} and return a summary, ranked causes, signals, rule IDs, and evidence.
+- GET /rules — list the active rules.
+- GET /healthz and /readyz — liveness and readiness checks.
+- GET /docs — interactive OpenAPI documentation.
+- GET /metrics — Prometheus metrics; hidden in production unless METRICS_TOKEN is configured, then requires a bearer token.
+
+The API has no user authentication. The hosted demo is public and should only receive telemetry that is safe to share. Production deployments should set CORS_ORIGINS, TRUST_PROXY_HOPS, JSON_BODY_LIMIT, and EXPLAIN_RATE_LIMIT to match their network and traffic. See backend/README.md.
+
+## Deploy
+
+The frontend can be deployed from frontend/ to Vercel; frontend/vercel.json proxies the API paths. Configure CORS_ORIGINS on the backend for the deployed frontend origin if its proxy forwards an Origin header. To run the combined frontend and API in one container:
+
+~~~powershell
+docker compose up --build
+~~~
+
+Open http://localhost:3000. Compose defaults to TRUST_PROXY_HOPS=0; set it to the exact number of trusted proxy hops when deploying behind a reverse proxy. See docs/architecture.md and docs/ai-roadmap.md.
+
+## Repository map
+
+- backend/src/app.js — HTTP middleware, routes, and error handling.
+- backend/src/engine/ — telemetry parsing, signal extraction, rule matching, and explanation.
+- backend/src/routes/ — analysis and rule-list endpoints.
+- backend/test/ — backend API and engine tests.
+- frontend/src/ — app shell, routes, editor, result components, and API client.
+- docs/ — architecture, decisions, and the optional AI feature design.

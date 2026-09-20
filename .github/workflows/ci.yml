@@ -51,3 +51,11 @@ jobs:
         working-directory: frontend
       - run: npm audit --audit-level=moderate
         working-directory: frontend
+
+  container:
+    name: Container build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - run: docker compose config -q
+      - run: docker compose build
