@@ -6,7 +6,6 @@ import ExplanationPanel from './components/ExplanationPanel'
 import { explain as explainApi, ApiRequestError } from './utils/api'
 import { parseTelemetryInput } from './utils/input'
 import type { ApiError, ExplainResponse, TelemetryEvent } from './types/api'
-import './App.css'
 
 const example = `[
   { "timestamp": "2026-10-17T16:12:00Z", "service": "api-gateway", "latency_ms": 920, "cpu_percent": 85, "status": 502, "error": "Bad Gateway" }
