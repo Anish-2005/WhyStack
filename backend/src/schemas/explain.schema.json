@@ -5,17 +5,21 @@
   "properties": {
     "logs": {
       "type": "array",
+      "maxItems": 5000,
       "items": {
         "type": "object",
         "properties": {
-          "timestamp": { "type": "string" },
-          "time": { "type": "string" },
-          "service": { "type": "string" },
-          "message": { "type": "string" },
-          "status": { "type": "integer" },
-          "latency_ms": { "type": "number" },
-          "cpu_percent": { "type": "number" },
-          "memory_percent": { "type": "number" }
+          "timestamp": { "type": "string", "maxLength": 128 },
+          "time": { "type": "string", "maxLength": 128 },
+          "service": { "type": "string", "maxLength": 128 },
+          "message": { "type": "string", "maxLength": 8192 },
+          "error": { "type": "string", "maxLength": 8192 },
+          "level": { "type": "string", "maxLength": 32 },
+          "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+          "latency_ms": { "type": "number", "minimum": 0, "maximum": 86400000 },
+          "cpu_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+          "memory_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+          "trace_id": { "type": "string", "maxLength": 256 }
         },
         "additionalProperties": true
       },

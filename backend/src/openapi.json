@@ -1,0 +1,131 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "WhyStack API",
+    "version": "1.0.0",
+    "description": "Deterministic, explainable incident analysis over structured telemetry."
+  },
+  "paths": {
+    "/explain": {
+      "post": {
+        "summary": "Analyze telemetry logs",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": ["logs"],
+                "additionalProperties": false,
+                "properties": {
+                  "logs": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 5000,
+                    "items": { "$ref": "#/components/schemas/TelemetryEvent" }
+                  }
+                }
+              },
+              "example": {
+                "logs": [
+                  {
+                    "timestamp": "2026-10-17T12:00:00Z",
+                    "service": "api-gateway",
+                    "latency_ms": 920,
+                    "cpu_percent": 85,
+                    "status": 502,
+                    "error": "Bad Gateway"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Analysis result with matched rules and supporting signals.",
+            "content": { "application/json": { "schema": { "$ref": "#/components/schemas/ExplainResponse" } } }
+          },
+          "400": { "description": "Invalid JSON shape or telemetry event." },
+          "413": { "description": "Request body exceeds the configured size limit." },
+          "429": { "description": "Analysis request limit exceeded." }
+        }
+      }
+    },
+    "/rules": {
+      "get": {
+        "summary": "List the active deterministic rules",
+        "responses": {
+          "200": {
+            "description": "Rules used by the analysis engine.",
+            "content": { "application/json": { "schema": { "type": "object", "properties": { "rules": { "type": "array", "items": { "type": "object" } } } } } }
+          }
+        }
+      }
+    },
+    "/healthz": { "get": { "summary": "Liveness check", "responses": { "200": { "description": "Process is alive." } } } },
+    "/readyz": { "get": { "summary": "Readiness check", "responses": { "200": { "description": "Process can serve requests." } } } }
+  },
+  "components": {
+    "schemas": {
+      "TelemetryEvent": {
+        "type": "object",
+        "additionalProperties": true,
+        "properties": {
+          "timestamp": { "type": "string", "maxLength": 128 },
+          "time": { "type": "string", "maxLength": 128 },
+          "service": { "type": "string", "maxLength": 128 },
+          "message": { "type": "string", "maxLength": 8192 },
+          "error": { "type": "string", "maxLength": 8192 },
+          "level": { "type": "string", "maxLength": 32 },
+          "status": { "type": "integer", "minimum": 100, "maximum": 599 },
+          "latency_ms": { "type": "number", "minimum": 0, "maximum": 86400000 },
+          "cpu_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+          "memory_percent": { "type": "number", "minimum": 0, "maximum": 100 },
+          "trace_id": { "type": "string", "maxLength": 256 }
+        }
+      },
+      "Signal": {
+        "type": "object",
+        "properties": {
+          "signal": { "type": "string" },
+          "severity": { "type": "string", "enum": ["high", "medium", "low"] },
+          "service": { "type": "string" },
+          "startTime": { "type": "string", "nullable": true },
+          "info": { "type": "object" }
+        }
+      },
+      "Cause": {
+        "type": "object",
+        "required": ["ruleId", "cause", "confidence", "score", "service", "conditions", "evidence"],
+        "properties": {
+          "ruleId": { "type": "string" },
+          "cause": { "type": "string" },
+          "confidence": { "type": "number", "minimum": 0, "maximum": 1, "description": "Rule weight; it is not a calibrated probability." },
+          "score": { "type": "number", "minimum": 0, "maximum": 1 },
+          "confidenceLabel": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "service": { "type": "string" },
+          "conditions": { "type": "array", "items": { "type": "string" } },
+          "evidence": { "type": "array", "items": { "$ref": "#/components/schemas/Signal" } }
+        }
+      },
+      "ExplainResponse": {
+        "type": "object",
+        "required": ["summary", "explanation", "signals_detected", "confidence", "trace"],
+        "properties": {
+          "summary": { "type": "string" },
+          "explanation": { "type": "string" },
+          "signals_detected": { "type": "array", "items": { "type": "string" } },
+          "confidence": { "type": "string", "enum": ["High", "Medium", "Low"] },
+          "trace": {
+            "type": "object",
+            "properties": {
+              "signals": { "type": "array", "items": { "$ref": "#/components/schemas/Signal" } },
+              "causes": { "type": "array", "items": { "$ref": "#/components/schemas/Cause" } }
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -1,4 +1,5 @@
 const client = require('prom-client');
+const crypto = require('crypto');
 
 const register = new client.Registry();
 client.collectDefaultMetrics({ register });
@@ -16,14 +17,25 @@ function metricsMiddleware(req, res, next) {
   res.on('finish', () => {
     const diff = process.hrtime(start);
     const seconds = diff[0] + diff[1] / 1e9;
-    httpRequestDuration.labels(req.method, req.route ? req.route.path : req.path, String(res.statusCode)).observe(seconds);
+    const route = req.route ? `${req.baseUrl}${req.route.path}` : 'unmatched';
+    httpRequestDuration.labels(req.method, route || '/', String(res.statusCode)).observe(seconds);
   });
   next();
 }
 
 function metricsEndpoint(req, res) {
+  const expectedToken = process.env.METRICS_TOKEN;
+  if (process.env.NODE_ENV === 'production' && !expectedToken) return res.sendStatus(404);
+  if (expectedToken) {
+    const providedToken = (req.get('authorization') || '').replace(/^Bearer\s+/i, '');
+    const expected = Buffer.from(expectedToken);
+    const provided = Buffer.from(providedToken);
+    if (expected.length !== provided.length || !crypto.timingSafeEqual(expected, provided)) {
+      return res.sendStatus(401);
+    }
+  }
   res.set('Content-Type', register.contentType);
-  register.metrics().then(data => res.send(data)).catch(err => res.status(500).send(err.message));
+  register.metrics().then(data => res.send(data)).catch(() => res.status(500).json({ error: 'metrics unavailable' }));
 }
 
 module.exports = { metricsMiddleware, metricsEndpoint, register };

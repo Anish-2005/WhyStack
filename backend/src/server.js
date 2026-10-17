@@ -1,58 +1,46 @@
-const path = require('path');
 const fs = require('fs');
-const express = require('express');
+const path = require('path');
 
-const app = require('./app');
-const explainRouter = require('./routes/explain');
+const { createApp } = require('./app');
+const logger = require('./logger');
 
-// Mount API routes
-app.use('/explain', explainRouter);
-
-// Serve built frontend if present
 const frontendDist = path.join(__dirname, '..', '..', 'frontend', 'dist');
-if (fs.existsSync(frontendDist)) {
-  app.use(express.static(frontendDist));
+const app = createApp({ staticDir: fs.existsSync(frontendDist) ? frontendDist : undefined });
+const configuredPort = Number(process.env.PORT || 3000);
 
-  app.get('*', (req, res, next) => {
-    const url = req.url || '';
-    if (url.startsWith('/explain') || url.startsWith('/.well-known') || url.startsWith('/favicon.svg')) return next();
-    res.sendFile(path.join(frontendDist, 'index.html'));
-  });
-} else {
-  // optional: serve a minimal health page or other public files if provided
-  const publicDir = path.join(__dirname, '..', '..', 'public');
-  if (fs.existsSync(publicDir)) app.use(require('express').static(publicDir));
+if (!Number.isInteger(configuredPort) || configuredPort < 1 || configuredPort > 65535) {
+  throw new Error('PORT must be an integer between 1 and 65535');
 }
 
-// favicon route (attempt to serve from frontend/dist then fallback to public)
-app.get('/favicon.svg', (req, res) => {
-  const candidates = [
-    path.join(frontendDist, 'favicon.svg'),
-    path.join(__dirname, '..', '..', 'public', 'favicon.svg')
-  ];
-  for (const p of candidates) if (fs.existsSync(p)) return res.sendFile(p);
-  res.status(404).end();
+const server = app.listen(configuredPort, () => {
+  logger.info({ port: configuredPort, environment: process.env.NODE_ENV || 'development' }, 'WhyStack API listening');
 });
 
-// well-known probe
-app.get('/.well-known/appspecific/com.chrome.devtools.json', (req, res) => {
-  res.setHeader('Content-Type', 'application/json');
-  res.send(JSON.stringify({ installed: false }));
+server.on('error', (err) => {
+  logger.fatal({ err }, 'WhyStack API failed to start');
+  process.exitCode = 1;
 });
 
-const port = process.env.PORT || 3000;
-const server = app.listen(port, () => console.log(`whystack backend listening on http://localhost:${port}`));
-
-// graceful shutdown
+let shuttingDown = false;
 function shutdown(signal) {
-  console.log(`Received ${signal}, shutting down`);
-  server.close(err => {
+  if (shuttingDown) return;
+  shuttingDown = true;
+  logger.info({ signal }, 'Graceful shutdown started');
+
+  const forceExit = setTimeout(() => {
+    logger.error({ signal }, 'Graceful shutdown timed out');
+    process.exit(1);
+  }, 10_000);
+  forceExit.unref();
+
+  server.close((err) => {
+    clearTimeout(forceExit);
     if (err) {
-      console.error('Error during server close', err);
-      process.exit(1);
+      logger.error({ err, signal }, 'Server shutdown failed');
+      process.exitCode = 1;
+      return;
     }
-    console.log('Server closed');
-    process.exit(0);
+    logger.info({ signal }, 'Server shutdown complete');
   });
 }
 

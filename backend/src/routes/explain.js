@@ -11,22 +11,21 @@ const logger = require('../logger');
 const { validateSchema } = require('../middleware/validator');
 
 // validate request body against schema
-router.post('/', validateSchema('explain.schema.json'), async (req, res) => {
+router.post('/', validateSchema('explain.schema.json'), (req, res) => {
   const start = Date.now();
   try {
     const { logs } = req.body;
-    const key = crypto.createHash('sha1').update(JSON.stringify(logs)).digest('hex');
+    const key = crypto.createHash('sha256').update(JSON.stringify(logs)).digest('hex');
 
     if (cache.has(key)) {
       logger.info({ route: '/explain', cached: true });
       return res.json(cache.get(key));
     }
 
-    // allow heavy processing to be async-friendly
-    const parsed = await Promise.resolve().then(() => parser.parseAndNormalize(logs));
-    const detectedSignals = await Promise.resolve().then(() => signals.extractSignals(parsed));
-    const causes = await Promise.resolve().then(() => ruleEngine.matchAndRank(detectedSignals));
-    const explanation = await Promise.resolve().then(() => explainer.explain(causes, detectedSignals));
+    const parsed = parser.parseAndNormalize(logs);
+    const detectedSignals = signals.extractSignals(parsed);
+    const causes = ruleEngine.matchAndRank(detectedSignals);
+    const explanation = explainer.explain(causes, detectedSignals);
 
     const payload = {
       summary: causes[0] ? causes[0].cause : 'Unknown cause',
