@@ -12,7 +12,8 @@ function parseAndNormalize(logs) {
       return new Date(a.timestamp) - new Date(b.timestamp);
     });
 
-  const byService = {};
+  // Service names come from request input, so keep them out of Object.prototype.
+  const byService = Object.create(null);
   for (const ev of normalized) {
     const svc = ev.service || 'unknown';
     byService[svc] = byService[svc] || { service: svc, timeline: [] };
