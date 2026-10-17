@@ -1,18 +1,15 @@
 import { Link, useLocation } from 'react-router-dom'
-import React, { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { Menu, X, Book, Shield, Info, ChevronRight } from 'lucide-react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { ThemeToggle } from './ThemeToggle'
 import { LogoIcon } from './LogoIcon'
 
 export default function Header() {
-  const [open, setOpen] = useState(false)
   const location = useLocation()
-
-  // Close mobile menu when route changes
-  useEffect(() => {
-    setOpen(false)
-  }, [location.pathname])
+  const [menuState, setMenuState] = useState({ pathname: location.pathname, open: false })
+  const open = menuState.pathname === location.pathname && menuState.open
+  const closeMenu = () => setMenuState({ pathname: location.pathname, open: false })
 
   const navLinks = [
     { name: 'Docs', path: '/docs', icon: Book },
@@ -28,13 +25,13 @@ export default function Header() {
       className="relative z-50 mb-6 sm:mb-8"
     >
       <div className="liquid-glass flex items-center justify-between p-2.5 sm:p-3 sm:px-5">
-        <Link to="/" className="flex items-center gap-3 sm:gap-4 transition-transform hover:translate-y-[-1px] group shrink-0" onClick={() => setOpen(false)}>
+        <Link to="/" className="flex items-center gap-3 sm:gap-4 transition-transform hover:translate-y-[-1px] group shrink-0" onClick={closeMenu}>
           <div className="relative flex h-10 w-10 sm:h-12 sm:w-12 items-center justify-center rounded-xl sm:rounded-2xl bg-white/5 border border-white/10 shadow-[0_0_20px_rgba(99,102,241,0.1)] group-hover:shadow-[0_0_30px_rgba(99,102,241,0.3)] group-hover:bg-white/10 transition-all duration-500 shrink-0">
             <LogoIcon className="h-6 w-6 sm:h-7 sm:h-7 text-brand-400 group-hover:text-brand-300 transition-colors duration-500" />
           </div>
           <div className="flex flex-col">
             <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-2xl font-bold tracking-tight text-white font-sans text-liquid-glow">WhyStack</h1>
+              <span className="text-lg sm:text-2xl font-bold tracking-tight text-white font-sans text-liquid-glow">WhyStack</span>
               <span className="rounded-full border border-brand-400/30 bg-brand-500/10 px-2 py-0.5 text-[9px] sm:text-[10px] font-bold uppercase tracking-widest text-brand-300 flex-shrink-0">v0.1</span>
             </div>
             <p className="hidden md:block text-xs text-slate-400 font-medium tracking-wide">Deterministic Root Cause Analysis</p>
@@ -43,7 +40,7 @@ export default function Header() {
 
         {/* Desktop Nav */}
         <div className="flex items-center gap-3 sm:gap-6">
-          <nav className="hidden md:flex items-center gap-1">
+          <nav className="hidden md:flex items-center gap-1" aria-label="Primary navigation">
             {navLinks.map((link) => {
               const isActive = location.pathname === link.path
               return (
@@ -51,6 +48,7 @@ export default function Header() {
                   key={link.path}
                   className={`text-sm font-semibold transition-all px-3 py-2 rounded-xl flex items-center gap-2 ${isActive ? 'text-white bg-white/10 shadow-inner border border-white/5' : 'text-slate-300 hover:text-white hover:bg-white/5'}`}
                   to={link.path}
+                  aria-current={isActive ? 'page' : undefined}
                 >
                   <link.icon className={`w-4 h-4 ${isActive ? 'text-brand-400' : 'text-slate-400'}`} />
                   <span className={isActive ? 'text-liquid-glow' : ''}>{link.name}</span>
@@ -65,8 +63,9 @@ export default function Header() {
             {/* Mobile Hamburger */}
             <button
               className="md:hidden relative p-2 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 transition-colors flex items-center justify-center shrink-0"
-              onClick={() => setOpen(o => !o)}
-              aria-label="Toggle menu"
+              onClick={() => setMenuState({ pathname: location.pathname, open: !open })}
+              aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
+              aria-controls="mobile-navigation"
               aria-expanded={open}
             >
               <AnimatePresence mode="wait">
@@ -89,13 +88,15 @@ export default function Header() {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="mobile-navigation"
+            aria-hidden={!open}
             initial={{ opacity: 0, scale: 0.95, y: -10 }}
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.95, y: -10 }}
             transition={{ duration: 0.2, ease: "easeOut" }}
             className="absolute left-0 right-0 top-[110%] w-full liquid-glass flex flex-col p-2 md:hidden origin-top shadow-2xl z-50 border border-white/10"
           >
-            <div className="flex flex-col gap-1 w-full">
+            <nav className="flex flex-col gap-1 w-full" aria-label="Mobile navigation">
               {navLinks.map((link, i) => {
                 const isActive = location.pathname === link.path;
                 return (
@@ -108,7 +109,8 @@ export default function Header() {
                     <Link
                       className={`group flex items-center justify-between rounded-xl px-4 py-3.5 text-sm font-semibold transition-all ${isActive ? 'bg-brand-500/10 text-brand-300 border-white/10 shadow-inner' : 'text-slate-200 hover:bg-white/5 border-transparent'} border`}
                       to={link.path}
-                      onClick={() => setOpen(false)}
+                      onClick={closeMenu}
+                      aria-current={isActive ? 'page' : undefined}
                     >
                       <div className="flex items-center gap-3">
                         <div className={`p-1.5 rounded-lg ${isActive ? 'bg-brand-500/20 text-brand-400 border border-brand-500/30' : 'bg-white/5 text-slate-400 group-hover:text-slate-200 border border-white/5'} transition-all`}>
@@ -121,7 +123,7 @@ export default function Header() {
                   </motion.div>
                 )
               })}
-            </div>
+            </nav>
             <div className="mt-2 pt-3 border-t border-white/5 pb-2 px-4 text-center">
               <p className="text-[10px] uppercase tracking-widest text-slate-500 font-bold">WhyStack v0.1</p>
             </div>

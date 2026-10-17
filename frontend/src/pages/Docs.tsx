@@ -18,18 +18,18 @@ export default function Docs() {
 
         <motion.header initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="mb-10 text-center">
           <h1 className="text-4xl font-extrabold text-liquid-glow mb-4 font-sans">Documentation</h1>
-          <p className="text-lg text-slate-300 max-w-2xl mx-auto">Deterministic, explainable RCA for JSON logs. Learn how the engine works, payload shapes, and integration tips.</p>
+          <p className="text-lg text-slate-300 max-w-2xl mx-auto">Deterministic, explainable incident analysis for structured telemetry. Learn the input shape, correlation limits, and response fields.</p>
         </motion.header>
 
         <section className="grid md:grid-cols-2 gap-8 mb-10">
           <motion.div initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.1 }} className="liquid-glass p-8">
             <h2 className="text-2xl font-bold mb-4 text-white">How it Works</h2>
-            <p className="text-slate-300 leading-relaxed font-medium">WhyStack normalizes event timelines by service, extracts heuristic signals (latency, errors, CPU/memory pressure), then matches combinations of signals against a rule set to produce ranked causes and human-readable explanations.</p>
+            <p className="text-slate-300 leading-relaxed font-medium">WhyStack normalizes event timelines by service, extracts heuristic signals, then matches rules. Multi-signal rules require the same service and timestamps within five minutes. Events without timestamps can support single-signal findings only.</p>
           </motion.div>
 
           <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: 0.2 }} className="liquid-glass p-8">
             <h2 className="text-2xl font-bold mb-4 text-white">Integration</h2>
-            <p className="text-slate-300 leading-relaxed font-medium">POST a JSON payload to <code className="bg-white/10 px-2 py-1 rounded text-brand-300 font-mono shadow-inner border border-white/5">/explain</code> with a top-level <code>logs</code> array. See the example payload and response below.</p>
+            <p className="text-slate-300 leading-relaxed font-medium">POST an object with a top-level <code>logs</code> array to <code className="bg-white/10 px-2 py-1 rounded text-brand-300 font-mono shadow-inner border border-white/5">/explain</code>. The editor also accepts a raw array. Requests allow up to 5,000 events and 2 MB by default.</p>
           </motion.div>
         </section>
 
@@ -49,15 +49,32 @@ export default function Docs() {
           <pre className="bg-surface/80 p-6 rounded-2xl text-sm overflow-auto font-mono text-slate-300 shadow-inner border border-white/5">
             {`{
   "summary": "Downstream dependency failure",
-  "explanation": "The api-gateway likely misbehaved because Downstream dependency failure. This started around 2026-01-13T16:12:00Z when signals such as error_event, dependency_failure were observed.",
+  "explanation": "The leading rule-based explanation for api-gateway is Downstream dependency failure around 2026-01-13T16:12:00.000Z. Evidence: error_event, dependency_failure.",
   "signals_detected": ["error_event","dependency_failure"],
-  "confidence": "High"
+  "confidence": "High",
+  "trace": {
+    "causes": [
+      {
+        "ruleId": "gateway-dependency-failure",
+        "cause": "Downstream dependency failure",
+        "confidence": 0.9,
+        "score": 0.99,
+        "confidenceLabel": "High",
+        "service": "api-gateway",
+        "conditions": ["error_event", "dependency_failure"],
+        "evidence": [
+          { "signal": "error_event", "severity": "high", "service": "api-gateway" },
+          { "signal": "dependency_failure", "severity": "high", "service": "api-gateway" }
+        ]
+      }
+    ]
+  }
 }`}
           </pre>
         </motion.section>
 
         <motion.footer initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.6 }} className="mt-12 text-sm text-slate-400 text-center">
-          <span className="text-brand-400 font-semibold px-2">Tips:</span> Keep logs timestamped and include service names; include metrics (cpu_percent, memory_percent, latency_ms) for richer signals.
+          <span className="text-brand-400 font-semibold px-2">Tips:</span> Include timestamps and service names so the engine can correlate evidence safely. Rule scores are deterministic ranking heuristics, not calibrated probabilities. Full request and response contracts are available at <code>/docs</code>.
         </motion.footer>
       </div>
     </div>

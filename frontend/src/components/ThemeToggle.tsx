@@ -1,7 +1,7 @@
 import React from 'react'
 import { motion } from 'framer-motion'
 import { Sun, Moon } from 'lucide-react'
-import { useTheme } from '../context/ThemeContext'
+import { useTheme } from '../context/useTheme'
 
 export function ThemeToggle() {
     const { theme, toggleTheme } = useTheme()
@@ -11,7 +11,8 @@ export function ThemeToggle() {
         <button
             onClick={toggleTheme}
             className="relative flex items-center justify-center p-2 rounded-xl transition-all duration-300 hover:bg-white/10 dark:hover:bg-white/5 overflow-hidden"
-            aria-label="Toggle theme"
+            aria-label={`Switch to ${isLight ? 'dark' : 'light'} theme`}
+            aria-pressed={isLight}
         >
             <motion.div
                 initial={false}

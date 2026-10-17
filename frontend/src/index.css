@@ -145,6 +145,22 @@
 	mix-blend-mode: normal;
 }
 
+:focus-visible {
+	outline: 3px solid var(--color-brand-300);
+	outline-offset: 3px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	*,
+	*::before,
+	*::after {
+		scroll-behavior: auto !important;
+		animation-duration: 0.01ms !important;
+		animation-iteration-count: 1 !important;
+		transition-duration: 0.01ms !important;
+	}
+}
+
 @layer components {
 	.liquid-glass {
 		background-color: var(--glass-bg);
@@ -198,8 +214,12 @@
 	}
 
 	.btn:focus {
-		outline: 2px solid transparent;
-		outline-offset: 2px;
+		outline: none;
+	}
+
+	.btn:focus-visible {
+		outline: 3px solid var(--color-brand-300);
+		outline-offset: 3px;
 	}
 
 	.btn:disabled {

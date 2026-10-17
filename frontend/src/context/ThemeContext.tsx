@@ -1,97 +1,60 @@
-import React, { createContext, useContext, useEffect, useState } from 'react'
+import { useEffect, useState, type MouseEvent, type ReactNode } from 'react'
+import { flushSync } from 'react-dom'
+import { ThemeContext, type Theme } from './useTheme'
 
-type Theme = 'dark' | 'light'
+function getInitialTheme(): Theme {
+  if (typeof window === 'undefined') return 'dark'
+  try {
+    const storedTheme = window.localStorage.getItem('theme')
+    if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme
+  } catch {
+    // Storage can be unavailable in private browsing modes.
+  }
 
-type ThemeContextType = {
-    theme: Theme
-    toggleTheme: (e?: React.MouseEvent) => void
+  return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
 }
 
-const ThemeContext = createContext<ThemeContextType | undefined>(undefined)
+export function ThemeProvider({ children }: { children: ReactNode }) {
+  const [theme, setTheme] = useState<Theme>(getInitialTheme)
 
-export function ThemeProvider({ children }: { children: React.ReactNode }) {
-    const [theme, setTheme] = useState<Theme>(() => {
-        if (typeof window !== 'undefined') {
-            const savedTheme = localStorage.getItem('theme')
-            if (savedTheme === 'light' || savedTheme === 'dark') {
-                return savedTheme
-            }
-            return window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark'
-        }
-        return 'dark'
-    })
+  useEffect(() => {
+    document.documentElement.classList.toggle('light', theme === 'light')
+    try {
+      window.localStorage.setItem('theme', theme)
+    } catch {
+      // The current theme remains usable when storage is unavailable.
+    }
+  }, [theme])
 
-    useEffect(() => {
-        localStorage.setItem('theme', theme)
-        if (theme === 'light') {
-            document.documentElement.classList.add('light')
-        } else {
-            document.documentElement.classList.remove('light')
-        }
-    }, [theme])
-
-    const toggleTheme = (e?: React.MouseEvent) => {
-        const isDark = theme === 'dark'
-
-        // @ts-ignore - startViewTransition is not yet in all TS types
-        if (!document.startViewTransition || !e) {
-            setTheme(isDark ? 'light' : 'dark')
-            return
-        }
-
-        const x = e.clientX
-        const y = e.clientY
-        const endRadius = Math.hypot(
-            Math.max(x, window.innerWidth - x),
-            Math.max(y, window.innerHeight - y)
-        )
-
-        // @ts-ignore
-        const transition = document.startViewTransition(() => {
-            // Apply the new theme to the DOM instantly so the transition captures it correctly
-            if (isDark) {
-                document.documentElement.classList.add('light')
-            } else {
-                document.documentElement.classList.remove('light')
-            }
-            // Update React state
-            import('react-dom').then((ReactDOM) => {
-                ReactDOM.flushSync(() => {
-                    setTheme(isDark ? 'light' : 'dark')
-                })
-            }).catch(() => {
-                setTheme(isDark ? 'light' : 'dark')
-            })
-        })
-
-        transition.ready.then(() => {
-            const clipPath = [
-                `circle(0px at ${x}px ${y}px)`,
-                `circle(${endRadius}px at ${x}px ${y}px)`
-            ]
-
-            document.documentElement.animate(
-                {
-                    clipPath: clipPath,
-                },
-                {
-                    duration: 500,
-                    easing: "ease-in-out",
-                    pseudoElement: "::view-transition-new(root)",
-                }
-            )
-        })
+  function toggleTheme(event?: MouseEvent<HTMLButtonElement>) {
+    const nextTheme: Theme = theme === 'dark' ? 'light' : 'dark'
+    if (typeof document.startViewTransition !== 'function' || !event) {
+      setTheme(nextTheme)
+      return
     }
 
-    return (
-        <ThemeContext.Provider value={{ theme, toggleTheme }}>
-            {children}
-        </ThemeContext.Provider>
+    const { clientX, clientY } = event
+    const radius = Math.hypot(
+      Math.max(clientX, window.innerWidth - clientX),
+      Math.max(clientY, window.innerHeight - clientY),
     )
-}
 
-export function useTheme() {
-    const context = useContext(ThemeContext)
-    if (!context) throw new Error('useTheme must be used within ThemeProvider')
-    return context
+    const transition = document.startViewTransition(() => {
+      document.documentElement.classList.toggle('light', nextTheme === 'light')
+      flushSync(() => setTheme(nextTheme))
+    })
+
+    void transition.ready.then(() => {
+      document.documentElement.animate(
+        { clipPath: [`circle(0px at ${clientX}px ${clientY}px)`, `circle(${radius}px at ${clientX}px ${clientY}px)`] },
+        {
+          duration: 500,
+          easing: 'ease-in-out',
+          pseudoElement: '::view-transition-new(root)',
+        },
+      )
+    }).catch(() => setTheme(nextTheme))
+  }
+
+  return <ThemeContext.Provider value={{ theme, toggleTheme }}>{children}</ThemeContext.Provider>
 }

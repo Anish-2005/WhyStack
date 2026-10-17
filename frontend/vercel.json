@@ -9,10 +9,8 @@
   ],
   "rewrites": [
     { "source": "/explain", "destination": "https://whystack.onrender.com/explain" },
+    { "source": "/rules", "destination": "https://whystack.onrender.com/rules" },
     { "source": "/(.*)", "destination": "/index.html" }
   ],
-  "cleanUrls": true,
-  "env": {
-    "VITE_BACKEND_URL": "https://whystack.onrender.com"
-  }
+  "cleanUrls": true
 }
