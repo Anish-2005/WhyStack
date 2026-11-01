@@ -1,6 +1,9 @@
 const test = require('node:test');
 const assert = require('node:assert/strict');
 const { once } = require('node:events');
+const fs = require('node:fs/promises');
+const os = require('node:os');
+const path = require('node:path');
 
 const { createApp } = require('../src/app');
 
@@ -46,6 +49,26 @@ test('serves health, readiness, rules, and OpenAPI docs', async () => {
     assert.equal(docs.status, 200);
     assert.match(docs.headers.get('content-type'), /text\/html/);
   });
+});
+
+test('serves the SPA entrypoint for nested client-side routes', async () => {
+  const staticDir = await fs.mkdtemp(path.join(os.tmpdir(), 'whystack-static-'));
+  const indexHtml = '<!doctype html><title>WhyStack test shell</title>';
+  await fs.writeFile(path.join(staticDir, 'index.html'), indexHtml);
+
+  try {
+    await withServer(createApp({ staticDir }), async (baseUrl) => {
+      const response = await fetch(`${baseUrl}/workspace/history`, {
+        headers: { accept: 'text/html' },
+      });
+
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get('content-type'), /text\/html/);
+      assert.equal(await response.text(), indexHtml);
+    });
+  } finally {
+    await fs.rm(staticDir, { recursive: true, force: true });
+  }
 });
 
 test('validates explain requests and returns rule evidence', async () => {

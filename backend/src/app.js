@@ -67,7 +67,7 @@ function createApp({ staticDir } = {}) {
 
   if (staticDir) {
     app.use(express.static(staticDir, { fallthrough: true, maxAge: process.env.NODE_ENV === 'production' ? '1h' : 0 }));
-    app.get('*', (req, res, next) => {
+    app.get('/{*splat}', (req, res, next) => {
       if (!req.accepts('html')) return next();
       res.sendFile(require('path').join(staticDir, 'index.html'));
     });
