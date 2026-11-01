@@ -5,13 +5,13 @@ WhyStack analyzes structured telemetry and returns deterministic, evidence-backe
 ## Stack
 
 - Frontend: React 18, TypeScript, Vite 8, React Router 7, Monaco Editor, Tailwind CSS 4.
-- Backend: Node.js 24, Express 4, Ajv validation, an in-memory LRU response cache, and Prometheus metrics.
+- Backend: Node.js 24, Express 5, Ajv validation, an in-memory LRU response cache, and Prometheus metrics.
 - Storage: none. Requests and cache entries remain in process memory.
 - Deployment: Vercel static frontend and Render backend, or the bundled Docker image described below.
 
 ## Run locally
 
-Use Node.js 24 (Vite 8 requires Node.js 20.19+ or 22.12+).
+Use Node.js 24 for local development. The backend runtime supports Node.js 22, 24, or 26+ to match its Prometheus client; CI and the container use Node.js 24.
 
 ~~~powershell
 # Terminal 1

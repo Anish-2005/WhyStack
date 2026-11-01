@@ -1,4 +1,4 @@
-const client = require('prom-client');
+const client = require('@prometheus-io/client');
 const crypto = require('crypto');
 
 const register = new client.Registry();

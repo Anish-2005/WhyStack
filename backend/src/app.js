@@ -50,7 +50,7 @@ function createApp({ staticDir } = {}) {
 
   const explainLimiter = rateLimit({
     windowMs: DEFAULT_RATE_WINDOW_MS,
-    max: Number(process.env.EXPLAIN_RATE_LIMIT || DEFAULT_REQUEST_LIMIT),
+    limit: Number(process.env.EXPLAIN_RATE_LIMIT || DEFAULT_REQUEST_LIMIT),
     standardHeaders: true,
     legacyHeaders: false,
     handler(_req, res) {

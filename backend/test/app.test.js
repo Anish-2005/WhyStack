@@ -48,6 +48,12 @@ test('serves health, readiness, rules, and OpenAPI docs', async () => {
     const docs = await fetch(`${baseUrl}/docs`);
     assert.equal(docs.status, 200);
     assert.match(docs.headers.get('content-type'), /text\/html/);
+
+    const metrics = await fetch(`${baseUrl}/metrics`);
+    const metricPayload = await metrics.text();
+    assert.equal(metrics.status, 200);
+    assert.match(metrics.headers.get('content-type'), /text\/plain/);
+    assert.match(metricPayload, /http_request_duration_seconds_bucket/);
   });
 });
 
