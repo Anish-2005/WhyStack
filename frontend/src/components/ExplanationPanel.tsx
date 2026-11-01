@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Activity, AlertTriangle, BrainCircuit, Code2, Copy, FileSearch, Info, ShieldAlert } from 'lucide-react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import { useTheme } from '../context/useTheme'
 import type { ApiError, ExplainResponse, Signal } from '../types/api'
 

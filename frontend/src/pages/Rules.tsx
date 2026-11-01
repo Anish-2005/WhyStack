@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 import Header from '../components/Header'
 import { fetchRules } from '../utils/api'
 import type { RuleSummary } from '../types/api'

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 import Header from './components/Header'
 import EditorPanel from './components/EditorPanel'
 import ExplanationPanel from './components/ExplanationPanel'

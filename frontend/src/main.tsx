@@ -1,7 +1,7 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from 'react-router-dom'
-import { MotionConfig } from 'framer-motion'
+import { MotionConfig } from 'motion/react'
 import './index.css'
 import App from './App'
 import Docs from './pages/Docs'

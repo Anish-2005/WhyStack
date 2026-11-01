@@ -1,6 +1,6 @@
 import React from 'react'
 import Header from '../components/Header'
-import { motion } from 'framer-motion'
+import { motion } from 'motion/react'
 
 export default function Docs() {
   return (
