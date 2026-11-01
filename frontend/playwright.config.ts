@@ -8,7 +8,7 @@ export default defineConfig({
   fullyParallel: true,
   forbidOnly: ci,
   retries: ci ? 1 : 0,
-  workers: ci ? 2 : undefined,
+  workers: ci ? 1 : undefined,
   reporter: 'list',
   use: {
     baseURL: 'http://127.0.0.1:5173',
